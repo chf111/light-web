@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IUserDao">
+	<resultMap type="up.light.web.entity.UserDO" id="userMapSimple">
+		<id property="id" column="uid" />
+		<result property="username" column="username" />
+		<result property="nickname" column="nickname" />
+	</resultMap>
+
+	<resultMap type="up.light.web.entity.UserDO" id="userMap">
+		<id property="id" column="uid" />
+		<result property="username" column="username" />
+		<result property="nickname" column="nickname" />
+		<result property="enable" column="enable" />
+		<result property="lastTime" column="last_time" />
+		<association property="role" resultMap="up.light.web.dao.IRoleDao.roleMap" />
+	</resultMap>
+
+	<!-- 查询结果包含密码，仅供认证时使用 -->
+	<resultMap extends="userMap" type="up.light.web.entity.UserDO" id="userMapInternal" >
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="enable" column="enable" />
+		<result property="lastTime" column="last_time" />
+		<association property="role" javaType="up.light.web.entity.RoleDO">
+			<result property="name" column="name" />
+		</association>
+	</resultMap>
+
+	<insert id="insertUser" parameterType="up.light.web.entity.UserDO"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_user (
+			`username`,
+			`password`,
+			`nickname`,
+			`enable`,
+			`last_time`,
+			`rid`
+		)
+		VALUES
+			(
+				#{username},
+				#{password},
+				#{nickname},
+				#{enable},
+				#{lastTime},
+				#{role.id}
+			);
+	</insert>
+
+	<!-- password为空时为修改基本信息，不为空时则为修改密码 -->
+	<update id="updateUser" parameterType="up.light.web.entity.UserDO">
+		UPDATE t_user
+		<set>
+			<choose>
+				<when test="password != null">
+					`password` = #{password},
+					`last_time` = #{lastTime}
+				</when>
+				<otherwise>
+					`nickname` = #{nickname},
+					`enable` = #{enable},
+					`rid` = #{role.id}
+				</otherwise>
+			</choose>
+		</set>
+		WHERE `uid` = #{id};
+	</update>
+
+	<delete id="deleteUser" parameterType="int">
+		DELETE FROM t_user WHERE `uid` = #{id};
+	</delete>
+
+	<select id="selectUserById" resultMap="userMap">
+		SELECT
+			`uid`,
+			`username`,
+			`nickname`,
+			`enable`,
+			`last_time`,
+			t_user.`rid`,
+			`name`,
+			`description`
+		FROM
+			t_user
+		JOIN t_role ON t_user.`rid` = t_role.`rid`
+		WHERE
+			`uid` = #{id};
+	</select>
+
+	<select id="selectPasswordById" parameterType="int" resultType="string">
+		SELECT
+			`password`
+		FROM
+			t_user
+		WHERE
+			`uid` = #{id};
+	</select>
+
+	<select id="selectUserByUsername" parameterType="string" resultMap="userMapInternal">
+		SELECT
+			`username`,
+			`password`,
+			`enable`,
+			`last_time`,
+			`name`
+		FROM
+			t_user
+		JOIN t_role ON t_user.`rid` = t_role.`rid`
+		WHERE
+			`username` = #{username};
+	</select>
+
+	<select id="selectAllUsers" resultMap="userMap">
+		SELECT
+			`uid`,
+			`username`,
+			`nickname`,
+			`enable`,
+			`last_time`,
+			t_user.`rid`,
+			`name`,
+			`description`
+		FROM
+			t_user
+		JOIN t_role ON t_user.`rid` = t_role.`rid`
+		WHERE
+			`uid` > 1;
+	</select>
+</mapper>

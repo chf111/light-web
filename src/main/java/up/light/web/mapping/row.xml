@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IRowDao">
+	<resultMap type="up.light.web.entity.RowDO" id="rowMap">
+		<id property="id" column="roid" />
+		<result property="mid" column="mid" />
+		<result property="values" column="vals" />
+	</resultMap>
+
+	<insert id="insertRow" parameterType="up.light.web.entity.RowDO">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(`roid`) + 1,1) id FROM t_data_row WHERE `mid` = #{mid};
+		</selectKey>
+		INSERT INTO t_data_row (
+			`roid`,
+			`mid`,
+			`vals`
+		)
+		VALUES
+			(
+				#{id},
+				#{mid},
+				#{values}
+			);
+	</insert>
+
+	<update id="updateRow" parameterType="up.light.web.entity.RowDO">
+		UPDATE t_data_row
+		SET `vals` = #{values}
+		WHERE
+			`roid` = #{id};
+	</update>
+
+	<delete id="deleteRow">
+		DELETE FROM t_data_row WHERE `roid` = #{roid} AND `mid` = #{mid};
+	</delete>
+
+	<select id="selectRowByPage" parameterType="int" resultMap="rowMap">
+		SELECT
+			`roid`,
+			`mid`,
+			`vals`
+		FROM
+			t_data_row
+		WHERE
+			t_data_row.`mid` = #{mid}
+		ORDER BY
+			`roid`;
+	</select>
+
+	<select id="forEachRow" resultMap="rowMap">
+		SELECT
+			`roid`,
+			`mid`,
+			`vals`
+		FROM
+			t_data_row
+		WHERE
+			t_data_row.`mid` = #{mid}
+		ORDER BY
+			`roid`;
+	</select>
+</mapper>

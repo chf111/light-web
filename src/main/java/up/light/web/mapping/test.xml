@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.ITestDao">
+	<resultMap type="up.light.web.entity.TestDO" id="testMap">
+		<id property="id" column="tid" />
+		<result property="pid" column="pid" />
+		<result property="finish" column="finish" />
+		<result property="name" column="name" />
+		<result property="createTime" column="create_time" />
+		<result property="dsid" column="dsid" />
+		<association property="creator" resultMap="up.light.web.dao.IUserDao.userMapSimple" />
+	</resultMap>
+
+	<insert id="insertTest" parameterType="up.light.web.entity.TestDO"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_test (
+			`pid`,
+			`finish`,
+			`name`,
+			`create_time`,
+			`creator_id`,
+			`dsid`
+		)
+		VALUES
+			(
+				#{pid},
+				#{finish},
+				#{name},
+				#{createTime},
+				#{creator.id},
+				#{dsid}
+			);
+	</insert>
+
+	<delete id="deleteTest" parameterType="int">
+		DELETE FROM t_test WHERE `tid` = #{id};
+	</delete>
+
+	<delete id="deleteTestByProject" parameterType="int">
+		DELETE t_test,
+		 t_result
+		FROM
+			t_test
+		LEFT JOIN t_result ON t_test.`tid` = t_result.`tid`
+		WHERE
+			t_test.`pid` = #{pid};
+	</delete>
+
+	<select id="selectTestByPage" parameterType="int" resultMap="testMap">
+		SELECT
+			`tid`,
+			`pid`,
+			`finish`,
+			`name`,
+			`create_time`,
+			`dsid`,
+			`uid`,
+			`username`,
+			`nickname`
+		FROM
+			t_test
+		JOIN t_user ON t_test.`creator_id` = t_user.`uid`
+		WHERE
+			`pid` = #{pid};
+	</select>
+</mapper>

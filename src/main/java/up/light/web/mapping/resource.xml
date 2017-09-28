@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IResourceDao">
+	<resultMap type="up.light.web.entity.ResourceDO" id="resourceMap">
+		<id property="id" column="rsid" />
+		<result property="method" column="method" />
+		<result property="urlPattern" column="url" />
+	</resultMap>
+
+	<resultMap type="up.light.web.entity.ResourceDO" id="roleResourceMap" extends="resourceMap">
+		<collection property="roles" resultMap="up.light.web.dao.IRoleDao.roleMap" />
+	</resultMap>
+
+	<insert id="insertResource" parameterType="up.light.web.entity.ResourceDO"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_resource (
+			`rsid`,
+			`method`,
+			`url`
+		)
+		VALUES
+			(
+				#{id},
+				#{method},
+				#{urlPattern}
+			);
+	</insert>
+
+	<update id="updateResource" parameterType="up.light.web.entity.ResourceDO">
+		UPDATE t_resource
+		SET `method` = #{method},
+		 `url` = #{urlPattern}
+		WHERE
+			`rsid` = #{id};
+	</update>
+
+	<delete id="deleteResource" parameterType="int">
+		DELETE FROM t_resource WHERE `rsid` = #{id};
+	</delete>
+
+	<select id="selectResourceById" parameterType="int" resultMap="resourceMap">
+		SELECT
+			`rsid`,
+			`method`,
+			`url`
+		FROM
+			t_resource
+		WHERE
+			`rsid` = #{id};
+	</select>
+
+	<select id="selectAllResources" resultMap="resourceMap">
+		SELECT
+			`rsid`,
+			`method`,
+			`url`
+		FROM
+			t_resource;
+	</select>
+
+	<select id="selectAllResourcesWithRole" resultMap="roleResourceMap">
+		SELECT
+			t_resource.`rsid`,
+			`method`,
+			`url`,
+			t_role.`rid`,
+			`name`,
+			`desc`
+		FROM
+			t_resource
+		JOIN t_role_resource ON t_resource.`rsid` = t_role_resource.`rsid`
+		JOIN t_role ON t_role.`rid` = t_role_resource.`rid`;
+	</select>
+
+	<select id="selectRoles" parameterType="int" resultMap="up.light.web.dao.IRoleDao.roleMap">
+		SELECT
+			t_role.`rid`,
+			`name`,
+			`desc`
+		FROM
+			t_resource
+		JOIN t_role_resource ON t_resource.`rsid` = t_role_resource.`rsid`
+		JOIN t_role ON t_role.`rid` = t_role_resource.`rid`
+		WHERE
+			t_resource.`rsid` = #{id};
+	</select>
+</mapper>

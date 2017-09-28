@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IModuleDao">
+	<resultMap type="up.light.web.entity.ModuleDO" id="moduleMap">
+		<id property="id" column="mid" />
+		<result property="name" column="name" />
+		<result property="pid" column="pid" />
+		<result property="className" column="class_name" />
+	</resultMap>
+
+	<insert id="insertModule" parameterType="up.light.web.entity.ModuleDO"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_data_module (
+			`name`,
+			`pid`,
+			`class_name`
+		)
+		VALUES
+			(
+				#{name},
+				#{pid},
+				#{className}
+			);
+	</insert>
+
+	<update id="updateModule" parameterType="up.light.web.entity.ModuleDO">
+		UPDATE t_data_module
+		<set>
+			`name` = #{name},
+			<if test="className != null">
+				`class_name` = #{className}
+			</if>
+		</set>
+		WHERE
+			`pid` = #{id};
+	</update>
+
+	<delete id="deleteModule" parameterType="int">
+		DELETE FROM t_data_module WHERE `mid` = #{id};
+	</delete>
+
+	<select id="selectModulesByProject" parameterType="int" resultMap="moduleMap">
+		SELECT
+			`mid`,
+			`name`,
+			`pid`,
+			`class_name`
+		FROM
+			t_data_module
+		WHERE
+			`pid` = #{pid};
+	</select>
+
+	<select id="selectModulesByDataSet" parameterType="int" resultMap="moduleMap">
+		SELECT
+			t_data_module.`mid`,
+			`name`,
+			`pid`,
+			`class_name`
+		FROM
+			t_data_module
+		JOIN t_dataset_module ON t_dataset_module.`mid` = t_data_module.`mid`
+		WHERE
+			`dsid` = #{dsid};
+	</select>
+
+	<select id="selectColumns" parameterType="int" resultType="String">
+		SELECT
+			`name`
+		FROM
+			t_data_column
+		WHERE
+			`mid` = #{mid};
+	</select>
+</mapper>

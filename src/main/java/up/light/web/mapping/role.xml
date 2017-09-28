@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IRoleDao">
+	<resultMap type="up.light.web.entity.RoleDO" id="roleMap">
+		<id property="id" column="rid" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+	</resultMap>
+
+	<insert id="insertRole" parameterType="up.light.web.entity.RoleDO"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO t_role (
+			`rid`,
+			`name`,
+			`description`
+		)
+		VALUES
+			(
+				#{id},
+				#{name},
+				#{description}
+			);
+	</insert>
+
+	<update id="updateRole" parameterType="up.light.web.entity.RoleDO">
+		UPDATE t_role SET `description` = #{description} WHERE `rid` = #{id};
+	</update>
+
+	<delete id="deleteRole" parameterType="int">
+		DELETE FROM t_role WHERE `rid` = #{id};
+	</delete>
+
+	<select id="selectRoleById" parameterType="int" resultMap="roleMap">
+		SELECT
+			`rid`,
+			`name`,
+			`description`
+		FROM
+			t_role
+		WHERE
+			`rid` = #{id};
+	</select>
+
+	<select id="selectAllRoles" resultMap="roleMap">
+		SELECT
+			`rid`,
+			`name`,
+			`description`
+		FROM
+			t_role
+		WHERE
+			`rid` > 1;
+	</select>
+
+	<select id="selectResources" parameterType="int" resultMap="up.light.web.dao.IResourceDao.resourceMap">
+		SELECT
+			t_resource.`rsid`,
+			`method`,
+			`url`
+		FROM
+			t_role
+		JOIN t_role_resource ON t_role.`rid` = t_role_resource.`rid`
+		JOIN t_resource ON t_resource.`rsid` = t_role_resource.`rsid`
+		WHERE
+			t_role.`rid` = #{id};
+	</select>
+</mapper>

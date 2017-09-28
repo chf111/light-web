@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<t_user uid="1" username="light"
+		password="$2a$10$iseIarnUOLvG0rYRdTW8DegosXXflrNJQh694tH92q51Qd2DtC3OS"
+		nickname="程序猿" enable="1" last_time="2017-08-01 12:00:00" rid="1" />
+	<t_user uid="2" username="test" password="unit" nickname="普通测试用户"
+		enable="1" last_time="2017-12-25 12:00:00" rid="4" />
+</dataset>

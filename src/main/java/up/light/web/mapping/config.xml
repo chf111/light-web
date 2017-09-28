@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IConfigDao">
+	<resultMap type="HashMap" id="configMap">
+		<result property="key" column="name" />
+		<result property="value" column="val" />
+	</resultMap>
+
+	<select id="selectConfig" parameterType="int" resultMap="configMap">
+		SELECT
+			`name`,
+			`val`
+		FROM
+			t_config
+		WHERE
+			`pid` = #{pid};
+	</select>
+</mapper>

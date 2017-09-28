@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="up.light.web.dao.IFlowDao">
+	<resultMap type="up.light.web.entity.FlowDO" id="flowMap">
+		<id property="id" column="fid" />
+		<result property="mid" column="mid" />
+		<result property="initScript" column="init_script" />
+		<collection property="steps" ofType="up.light.web.entity.StepDO">
+			<id property="serviceId" column="service_id" />
+			<result property="url" column="SERVICE_FUNCTION_ID" />
+			<result property="resultPaths" column="result_path" />
+			<result property="type" column="type" />
+			<result property="orderNo" column="order_no" />
+			<result property="info" column="SERVICE_CONTENT" />
+		</collection>
+	</resultMap>
+
+	<insert id="insertFlow" parameterType="up.light.web.entity.FlowDO">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(`fid`) + 1,1) id FROM t_flow;
+		</selectKey>
+		INSERT INTO t_flow (
+			`fid`,
+			`service_id`,
+			`init_script`,
+			`mid`
+		)
+		VALUES
+		<foreach collection="steps" item="item" separator=",">
+			(
+				#{id},
+				#{item.serviceId},
+				#{initScript},
+				#{mid}
+			)
+		</foreach>
+	</insert>
+
+	<delete id="deleteFlow" parameterType="int">
+		DELETE FROM t_flow WHERE `fid` = #{id};
+	</delete>
+
+	<select id="selectFlowByModule" parameterType="int" resultMap="flowMap">
+		SELECT
+			`fid`,
+			`mid`,
+			`init_script`,
+			t_step.`service_id`,
+			`result_path`,
+			`type`,
+			`order_no`,
+			`SERVICE_FUNCTION_ID`,
+			`SERVICE_CONTENT`
+		FROM
+			t_flow
+		JOIN t_step ON t_flow.`service_id` = t_step.`service_id`
+		LEFT JOIN t_service_info ON t_flow.`service_id` = t_service_info.`ID`
+		WHERE `mid` = #{mid}
+		ORDER BY
+			`order_no`;
+	</select>
+
+	<select id="selectFlowByPage" resultMap="flowMap">
+		SELECT
+			`fid`,
+			`mid`,
+			`init_script`,
+			t_step.`service_id`,
+			`result_path`,
+			`type`,
+			`order_no`,
+			`SERVICE_FUNCTION_ID`,
+			`SERVICE_CONTENT`
+		FROM
+			t_flow
+		JOIN t_step ON t_flow.`service_id` = t_step.`service_id`
+		LEFT JOIN t_service_info ON t_flow.`service_id` = t_service_info.`ID`;
+	</select>
+</mapper>

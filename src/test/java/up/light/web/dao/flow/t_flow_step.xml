@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<t_flow fid="1" service_id="4620" init_script="1.sql" mid="1" />
+	<t_flow fid="1" service_id="4623" init_script="1.sql" mid="1" />
+	<t_flow fid="2" service_id="4624" mid="2" />
+
+	<t_step service_id="4624" result_path='{"a":"$.a"}' type="1"
+		order_no="1" />
+	<t_step service_id="4623" result_path='{"a":"$.a"}' type="2"
+		order_no="2" />
+	<t_step service_id="4620" result_path='{"a":"$.a"}' type="1"
+		order_no="1" />
+
+	<t_service_info ID="4620" SERVICE_FUNCTION_ID="/api/trade/ggt/ptyw/wtxd"
+		SERVICE_CONTENT="{}" />
+	<t_service_info ID="4623" SERVICE_FUNCTION_ID="/api/trade/ggt/ptyw/cccx"
+		SERVICE_CONTENT="{}" />
+	<t_service_info ID="4624" SERVICE_FUNCTION_ID="/api/trade/rzrq/xgsg/yjsg"
+		SERVICE_CONTENT="{}" />
+</dataset>

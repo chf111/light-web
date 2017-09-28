@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<t_result reid="1" tid="1" status="0" start_time="2017-08-01 12:00:00"
+		end_time="2017-08-01 12:00:00" detail='{"id": "1", "msg": "hello"}' pic="1.png" />
+	<t_result reid="2" tid="1" status="0" start_time="2017-08-01 12:00:00"
+		end_time="2017-08-01 12:00:00" detail='{}' />
+	<t_result reid="3" tid="2" status="1" start_time="2017-08-01 12:00:00"
+		end_time="2017-08-01 12:00:00" detail='{}' />
+</dataset>

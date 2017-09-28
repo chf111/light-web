@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<t_config cid="1" pid="1" name="a" val="a" />
+	<t_config cid="2" pid="1" name="b" val="b" />
+</dataset>

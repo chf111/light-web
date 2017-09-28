@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<t_data_row roid="1" mid="1" vals='{"col": ["1", "2"]}' />
+	<t_data_row roid="2" mid="1" vals='{"col": ["1", "2"]}' />
+	<t_data_row roid="1" mid="2" vals='{}' />
+</dataset>
